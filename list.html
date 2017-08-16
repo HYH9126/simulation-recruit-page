@@ -1,0 +1,164 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title></title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+  <div id="wrap">
+  	<div class="left">
+    	<h2>招贤纳士</h2>
+      <ul>
+      	<li class="focus"><a href="javascript:;">社会招聘</a></li>
+      	<li><a href="javascript:;">校园招聘</a></li> 
+      </ul>
+    </div>
+  	<div class="right">
+    	<div class="title">
+      	<img src="img/shzp.gif" />
+      </div>
+      <div class="info">
+
+      </div>
+      <div class="pages">
+        <span class="prev">
+          <a href="javascript:;">
+            <img src="img/pre.gif">
+          </a>
+        </span>
+        <span class="next">
+          <a href="javascript:;">
+            <img src="img/next.gif">
+          </a>
+        </span>
+        <p id="yema">
+        </p>
+        
+      </div>
+      
+    </div>
+    <div class="clear"></div>
+  </div>
+<script src="js/data.js"></script>
+<script>
+	var title = document.getElementsByTagName('title')[0];
+	var title2 = document.getElementsByClassName('title')[0].getElementsByTagName('img')[0];
+	var left = document.getElementsByClassName('left')[0];
+	var lis = left.getElementsByTagName('li');
+	var info = document.getElementsByClassName('info')[0];
+	var yema = document.getElementById('yema');
+	var next = document.getElementsByClassName('next')[0];
+	var pre = document.getElementsByClassName('prev')[0];
+	var s = location.search.substr(1).split('=')[1];
+	var Data = [];
+	var len = 2;
+	var search = location.search.substr(1)
+	if(!search){
+		search = 'l=sh';
+	}
+	if(s){
+		for(var i=0;i<lis.length;i++){
+			lis[i].className = '';
+		}
+		if(s=='sh'){
+			lis[0].className = 'focus';
+			title.innerHTML = '招贤纳士-社会招聘'
+			Data = aData.sh;
+		}else{
+			lis[1].className = 'focus';
+			title.innerHTML = '招贤纳士-校园招聘'
+			Data = aData.xy;
+			title2.src = Data.img;
+		}
+	}else{
+		lis[0].className = 'focus';
+		title.innerHTML = '招贤纳士-社会招聘';
+		Data = aData.sh;
+	}
+	lis[0].onclick = function(){
+		location.hash = '';
+		location.search = 'l=sh';
+		
+	}
+	lis[1].onclick = function(){
+		location.hash = '';
+		location.search = 'l=xy';
+	}
+	var num = Math.ceil(Data.text.length/len);
+	var str = ''
+	for(var j=0;j<num;j++){
+		str += '<span><a href="javascript:;">'+(j+1)+'</a></span>';
+	}
+	yema.innerHTML = str;
+	var yemas = yema.getElementsByTagName('a');
+	fn();
+	function fn(){
+		var h = location.hash.substr(1).split('=')[1];
+		var hash = location.hash.substr(0,4);
+		if(h){
+			var page = h;
+			for(var e=0;e<yemas.length;e++){
+				yemas[e].parentElement.className = '';
+			}
+			yemas[h-1].parentElement.className = 'focus';
+		}else{
+			var hash = '#p=1';
+			var page = 1;
+			for(var f=0;f<yemas.length;f++){
+				yemas[f].parentElement.className = '';
+			}
+			yemas[0].parentElement.className = 'focus';
+		}
+		var start = (page-1)*len;
+		var end = start+len;
+		if(end>Data.text.length){
+			end = Data.text.length;
+		}
+		var str = '';
+		for(var i=start;i<end;i++){
+			str += '<p class="zp"><span><a href="content.html?'+search+hash+'='+i+'">★ 职位需求：'+Data.text[i].zw+
+			'</a></span><span>需求人数：'+Data.text[i].rs+'名</span><span class="date">'+Data.text[i].sj[0]+
+			'年'+Data.text[i].sj[1]+'月'+Data.text[i].sj[2]+'日</span></p><p class="yq">'+
+			Data.text[i].info[0].l.join('').substr(0,99)+'...[<a href="content.html?'+search+hash+'='+i+'">查看详情</a>]</p>';
+		}
+		info.innerHTML = str;
+	}
+	for(var k=0;k<yemas.length;k++){
+		yemas[k].index = k;
+		yemas[k].onclick = function(){
+			for(var i=0;i<yemas.length;i++){
+				yemas[i].parentElement.className = '';
+			}
+			location.hash = 'p='+(parseFloat(this.index)+1);
+			this.parentElement.className = 'focus';
+		}
+	}
+	pre.onclick = function(){
+		var h1 = location.hash.substr(1).split('=')[1];
+		if(!h1){
+			h1=1;
+		}
+		h1--;
+		if(h1<1){
+			h1=1;
+		}
+		location.hash = 'p='+h1;
+	}
+	next.onclick = function(){
+		var h1 = location.hash.substr(1).split('=')[1];
+		if(!h1){
+			h1=1;
+		}
+		h1++;
+		if(h1>num){
+			h1=num;
+		}
+		location.hash = 'p='+h1;
+	}
+	window.onhashchange = function(){
+		fn();
+	}
+</script>
+</body>
+</html>
